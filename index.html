@@ -688,22 +688,22 @@
         setTimeout(() => { modal.style.display = 'none'; document.getElementById('formSuccess').innerHTML = ''; }, 2000);
     };
     
-    // Карта Яндекс
-    ymaps.ready(init);
-    function init() {
-        var myMap = new ymaps.Map("yandexMap", { 
-            center: [56.7795, 60.6350], 
-            zoom: 16, 
-            controls: ['zoomControl', 'fullscreenControl'] 
-        });
-        myMap.geoObjects.add(new ymaps.Placemark([56.7795, 60.6350], {
-            balloonContentHeader: "🔧 AutoService",
-            balloonContentBody: "ул. Писарева, 33, Нижне-Исетский<br>Ежедневно 11:00–23:59<br>☎ +7 966 716-39-85"
-        }, { 
-            preset: 'islands#redAutoIcon', 
-            iconColor: '#ff8c00' 
-        }));
-    }
+  // Карта Яндекс
+ymaps.ready(init);
+function init() {
+    var myMap = new ymaps.Map("yandexMap", { 
+        center: [56.748548, 60.676993], 
+        zoom: 17, 
+        controls: ['zoomControl', 'fullscreenControl'] 
+    });
+    myMap.geoObjects.add(new ymaps.Placemark([56.748548, 60.676993], {
+        balloonContentHeader: "🔧 AutoService",
+        balloonContentBody: "ул. Писарева, 33, Нижне-Исетский<br>Ежедневно 11:00–23:59<br>☎ +7 966 716-39-85"
+    }, { 
+        preset: 'islands#redAutoIcon', 
+        iconColor: '#ff8c00' 
+    }));
+}
     
     buildGallery();
 </script>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>AutoService | Ремонт двигателей Екатеринбург</title>
+    <!-- Иконка сайта (favicon) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff8c00'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%230a0a0c' font-weight='bold'%3E🔧%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- API Яндекс.Карт с твоим ключом -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=8bc41d60-ffc3-49f8-96d5-29b4af281953&lang=ru_RU" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d1117;
+            color: #e4e4e7;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, #1a1f2e, #0a0c12);
+            z-index: -2;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .animate { animation: fadeUp 0.6s ease forwards; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        
+        .navbar { background: rgba(10, 14, 19, 0.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 140, 0, 0.3); }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; flex-wrap: wrap; gap: 12px; max-width: 1280px; margin: 0 auto; }
+        .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #ff8c00, #ffc857); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo span { color: white; background: none; }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .nav-links a { color: #ddd; text-decoration: none; font-weight: 500; transition: 0.2s; font-size: 0.9rem; cursor: pointer; }
+        .nav-links a:hover { color: #ff8c00; }
+        .btn-nav-call { background: #ff8c00; color: #0a0a0c !important; padding: 6px 18px; border-radius: 40px; font-weight: 700; }
+        
+        .hero { padding: 50px 0 40px; }
+        .hero-grid { display: flex; flex-wrap: wrap; gap: 35px; align-items: center; }
+        .hero-text { flex: 1.2; }
+        .hero-text h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+        .hero-text h1 span { color: #ff8c00; }
+        .hero-text p { color: #aaa; font-size: 1rem; margin-bottom: 24px; }
+        .hero-badge { background: rgba(255, 140, 0, 0.15); color: #ffaa44; display: inline-block; padding: 5px 14px; border-radius: 40px; font-size: 0.75rem; margin-bottom: 20px; border: 1px solid rgba(255,140,0,0.4); }
+        .info-cards { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
+        .info-card { background: rgba(30,30,38,0.6); backdrop-filter: blur(4px); padding: 10px 18px; border-radius: 60px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; border: 1px solid rgba(255,140,0,0.2); }
+        .btn-primary { background: #ff8c00; color: #0a0a0c; padding: 12px 28px; border-radius: 60px; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.2s; border: none; cursor: pointer; font-size: 0.9rem; }
+        .btn-primary:hover { background: #ffa333; transform: translateY(-2px); }
+        .btn-outline { border: 2px solid #ff8c00; background: transparent; color: #ff8c00; padding: 10px 24px; border-radius: 60px; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.2s; font-size: 0.9rem; margin-left: 12px; }
+        .btn-outline:hover { background: rgba(255,140,0,0.1); }
+        
+        .section-title { font-size: 1.8rem; font-weight: 700; margin: 40px 0 24px; position: relative; display: inline-block; }
+        .section-title:after { content: ''; width: 60px; height: 4px; background: #ff8c00; position: absolute; bottom: -10px; left: 0; border-radius: 4px; }
+        
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 30px 0; }
+        .service-card { background: rgba(25,28,35,0.8); backdrop-filter: blur(4px); border-radius: 28px; padding: 24px; border: 1px solid rgba(255,140,0,0.2); transition: 0.25s; }
+        .service-card:hover { border-color: #ff8c00; transform: translateY(-5px); background: rgba(30,34,42,0.9); }
+        .price-big { font-size: 2rem; font-weight: 800; color: #ffaa44; margin: 12px 0; }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 30px 0; }
+        .gallery-item { aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid rgba(255,140,0,0.2); transition: 0.2s; background: #1c1f26; }
+        .gallery-item:hover { border-color: #ff8c00; transform: scale(1.02); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .brands-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: flex-start; }
+        .brand-badge { background: rgba(255, 140, 0, 0.12); border: 1px solid rgba(255, 140, 0, 0.3); padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; font-weight: 500; color: #ffaa66; white-space: nowrap; }
+        
+        .advantages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }
+        .advantage-card { text-align: center; padding: 20px; background: rgba(25,28,35,0.6); border-radius: 24px; border: 1px solid rgba(255,140,0,0.15); }
+        .advantage-card i { font-size: 2.5rem; color: #ff8c00; margin-bottom: 12px; }
+        .advantage-card h4 { font-size: 1.1rem; margin-bottom: 8px; }
+        .advantage-card p { font-size: 0.85rem; color: #aaa; }
+        
+        .counter-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin: 30px 0; }
+        .counter-card { text-align: center; background: rgba(25,28,35,0.6); border-radius: 28px; padding: 30px 40px; min-width: 180px; border: 1px solid rgba(255,140,0,0.2); }
+        .counter-number { font-size: 3rem; font-weight: 800; color: #ff8c00; }
+        .counter-label { font-size: 0.9rem; color: #aaa; margin-top: 8px; }
+        
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; margin: 30px 0; }
+        .review-card { background: rgba(25,28,35,0.6); border-radius: 24px; padding: 20px; border: 1px solid rgba(255,140,0,0.15); }
+        .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .review-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ff8c00, #ffaa33); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #0a0a0c; }
+        .review-info { flex: 1; }
+        .review-name { font-weight: 700; color: white; }
+        .review-car { font-size: 0.7rem; color: #ffaa66; }
+        .review-stars { color: #ffc107; margin-bottom: 12px; letter-spacing: 2px; font-size: 0.9rem; }
+        .review-text { font-size: 0.9rem; color: #ddd; margin-bottom: 12px; font-style: italic; line-height: 1.4; }
+        .review-date { font-size: 0.7rem; color: #666; margin-top: 8px; }
+        .review-photo { margin-top: 12px; display: flex; gap: 8px; }
+        .review-photo-icon { background: #2a2e36; border-radius: 12px; padding: 8px 12px; font-size: 0.7rem; color: #ffaa66; display: inline-flex; align-items: center; gap: 6px; }
+        
+        .faq-item { background: rgba(25,28,35,0.6); border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,140,0,0.15); }
+        .faq-question { font-weight: 700; color: #ffaa44; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .faq-question i { transition: 0.2s; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: 0.3s; padding-left: 28px; color: #bbb; font-size: 0.9rem; }
+        .faq-item.open .faq-answer { max-height: 800px; margin-top: 12px; }
+        .faq-item.open .faq-question i { transform: rotate(90deg); }
+        
+        .engine-list { margin: 15px 0 0 0; padding-left: 20px; }
+        .engine-list li { margin: 6px 0; color: #ccc; }
+        
+        .contacts-block { background: rgba(18, 22, 28, 0.8); backdrop-filter: blur(4px); border-radius: 32px; padding: 28px; margin: 30px 0; border: 1px solid rgba(255,140,0,0.25); }
+        .contacts-flex { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-between; align-items: center; }
+        .contact-item { display: flex; align-items: center; gap: 15px; font-size: 1.1rem; margin: 15px 0; }
+        .contact-item i { font-size: 1.8rem; color: #ff8c00; width: 45px; text-align: center; }
+        .contact-item a { color: #fff; text-decoration: none; font-weight: 500; word-break: break-all; }
+        .contact-item a:hover { color: #ff8c00; }
+        .social-links { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .social-icon { background: #2a2e36; width: 48px; height: 48px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 24px; transition: 0.2s; color: white; text-decoration: none; }
+        .social-icon:hover { background: #ff8c00; color: #0a0a0c; transform: translateY(-3px); }
+        .map-container { height: 300px; border-radius: 28px; overflow: hidden; margin: 20px 0 40px; border: 2px solid #ff8c00; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .route-text { background: rgba(18,22,28,0.6); border-radius: 24px; padding: 18px; margin-top: 20px; }
+        .route-text p { margin: 8px 0; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        
+        footer { background: #06080c; padding: 30px 0; text-align: center; color: #777; margin-top: 40px; border-top: 1px solid #ff8c00; font-size: 0.8rem; }
+        
+        .floating-buttons { position: fixed; right: 15px; bottom: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: #1e1e24; display: flex; align-items: center; justify-content: center; font-size: 24px; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 12px black; color: white; }
+        .float-btn.tg { background: #0088cc; }
+        .float-btn.wa { background: #25D366; }
+        .float-btn.phone { background: #ff8c00; color: #0a0a0c; animation: pulse 1.5s infinite; }
+        .float-btn.avito { background: #00bfff; color: white; }
+        .float-btn:hover { transform: scale(1.1); animation: none; }
+        
+        .gallery-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 2000; flex-direction: column; }
+        .gallery-modal.active { display: flex; }
+        .gallery-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.8); color: white; }
+        .close-gallery { font-size: 28px; cursor: pointer; background: none; border: none; color: white; }
+        .gallery-slider { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .gallery-slide { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+        .gallery-slide img { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 16px; }
+        .gallery-slide p { margin-top: 20px; color: #ffaa66; font-weight: 500; text-align: center; background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 40px; }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 36px; padding: 10px 15px; cursor: pointer; border-radius: 50%; z-index: 10; }
+        .gallery-nav.prev { left: 10px; }
+        .gallery-nav.next { right: 10px; }
+        .gallery-dots { display: flex; justify-content: center; gap: 8px; padding: 15px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; cursor: pointer; }
+        .dot.active { background: #ff8c00; width: 20px; border-radius: 4px; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1e26; padding: 28px; border-radius: 32px; max-width: 420px; width: 90%; border: 1px solid #ff8c00; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; margin: 8px 0; background: #2a2e36; border: none; border-radius: 24px; color: white; font-family: inherit; }
+        .modal-content button { background: #ff8c00; width: 100%; padding: 12px; border-radius: 40px; font-weight: bold; border: none; margin-top: 12px; cursor: pointer; font-size: 1rem; }
+        .close-modal { float: right; font-size: 26px; cursor: pointer; color: #aaa; }
+        
+        .blog-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin: 40px 0; }
+        .blog-card { background: rgba(25,28,35,0.8); border-radius: 28px; overflow: hidden; border: 1px solid rgba(255,140,0,0.2); transition: 0.2s; }
+        .blog-card:hover { transform: translateY(-5px); border-color: #ff8c00; }
+        .blog-card img { width: 100%; height: 180px; object-fit: cover; }
+        .blog-content { padding: 20px; }
+        .blog-date { font-size: 0.7rem; color: #ffaa66; margin-bottom: 8px; }
+        .blog-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        .blog-excerpt { font-size: 0.85rem; color: #bbb; margin-bottom: 15px; }
+        .read-more { color: #ff8c00; text-decoration: none; font-weight: 500; font-size: 0.85rem; cursor: pointer; display: inline-block; }
+        .read-more:hover { text-decoration: underline; }
+        
+        .article-page { max-width: 800px; margin: 40px auto; padding: 30px; background: rgba(25,28,35,0.8); border-radius: 32px; border: 1px solid rgba(255,140,0,0.2); }
+        .article-page h1 { font-size: 2rem; margin-bottom: 20px; color: #ffaa66; }
+        .article-page .article-meta { color: #888; font-size: 0.85rem; margin-bottom: 30px; }
+        .article-page p { margin-bottom: 20px; line-height: 1.6; color: #ddd; }
+        .article-page h2 { margin: 30px 0 15px; color: #ffaa66; }
+        .article-page ul, .article-page ol { margin: 15px 0 20px 25px; color: #ddd; }
+        .article-page li { margin: 8px 0; }
+        .back-to-blog { background: #ff8c00; color: #0a0a0c; padding: 10px 24px; border-radius: 40px; text-decoration: none; display: inline-block; margin-top: 30px; font-weight: 600; cursor: pointer; }
+        
+        @media (max-width: 680px) {
+            .hero-text h1 { font-size: 1.9rem; }
+            .nav-flex { flex-direction: column; text-align: center; }
+            .nav-links { justify-content: center; }
+            .hero-cta { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+            .hero-cta .btn-primary, .hero-cta .btn-outline { margin-left: 0; text-align: center; width: 100%; max-width: 250px; }
+            .section-title { font-size: 1.6rem; }
+            .contacts-flex { flex-direction: column; align-items: flex-start; }
+            .floating-buttons { right: 12px; bottom: 20px; }
+            .float-btn { width: 44px; height: 44px; font-size: 20px; }
+            .container { padding: 0 16px; }
+            .info-cards { justify-content: center; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .brands-grid { justify-content: center; }
+            .brand-badge { white-space: normal; font-size: 0.75rem; padding: 6px 14px; }
+            .counter-card { padding: 20px 30px; min-width: 140px; }
+            .counter-number { font-size: 2rem; }
+            .reviews-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-flex">
+        <div class="logo">Auto<span>Service</span></div>
+        <div class="nav-links">
+            <a href="#" onclick="showMainPage(); scrollToTop();">Главная</a>
+            <a href="#services" onclick="showMainPage();">Услуги</a>
+            <a href="#gallery" onclick="showMainPage();">Фото</a>
+            <a href="#faq" onclick="showMainPage();">Вопросы</a>
+            <a href="#contacts" onclick="showMainPage();">Контакты</a>
+            <a href="#map" onclick="showMainPage();">Карта</a>
+            <a href="#" onclick="showBlogPage();">Блог</a>
+            <a href="#" id="openModalBtn" class="btn-nav-call">📞 Обратный звонок</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Основная страница -->
+<div id="mainPage">
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-text animate">
+                <div class="hero-badge">⚡ Частный автомеханик | Стаж 3 года</div>
+                <h1>Ремонт двигателей <span>с гарантией</span><br>в Екатеринбурге</h1>
+                <p>Специализация: Haval, Hyundai, Kia, Mitsubishi, Toyota, LADA. Регулировка клапанов, диагностика, замена цепи ГРМ.</p>
+                <div class="info-cards">
+                    <div class="info-card"><i class="fas fa-map-marker-alt"></i> ул. Писарева, 33</div>
+                    <div class="info-card"><i class="far fa-clock"></i> 11:00 – 23:59 ежедневно</div>
+                    <div class="info-card"><i class="fas fa-tools"></i> Свои запчасти — можно</div>
+                </div>
+                <div class="hero-cta">
+                    <a href="#contacts" class="btn-primary">📞 Связаться сейчас</a>
+                    <a href="#services" class="btn-outline">🔧 Наши услуги</a>
+                </div>
+            </div>
+            <div style="flex:0.7; text-align:center;">
+                <div style="background:rgba(0,0,0,0.4); border-radius: 50px; padding: 20px; backdrop-filter: blur(4px);">
+                    <i class="fas fa-car-engine" style="font-size: 60px; color:#ff8c00;"></i>
+                    <div class="brands-grid" style="margin-top: 15px; justify-content: center;">
+                        <span class="brand-badge">Hyundai</span>
+                        <span class="brand-badge">Kia</span>
+                        <span class="brand-badge">Toyota</span>
+                        <span class="brand-badge">Haval</span>
+                        <span class="brand-badge">Mitsubishi</span>
+                        <span class="brand-badge">LADA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" id="services">
+        <h2 class="section-title">Услуги и цены</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3><i class="fas fa-wrench"></i> Ремонт двигателя</h3>
+                <div class="price-big">от 8 000 ₽</div>
+                <p>Регулировка клапанов, проточка стаканов, замена толкателей. ⏱ ~6 ч</p>
+            </div>
+            <div class="service-card">
+                <h3><i class="fas fa-stethoscope"></i> Диагностика двигателя</h3>
+                <div class="price-big">3 000 ₽</div>
+                <p>Компрессия, натяжитель цепи, зазоры клапанов, метки ГРМ. ⏱ 3 ч</p>
+            </div>
+            <div class="service-card">
+                <h3><i class="fas fa-microscope"></i> Эндоскопия / Замена цепи</h3>
+                <div class="price-big">договорная</div>
+                <p>Осмотр камеры сгорания, замена цепи ГРМ, маслосъемных колпачков.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Почему выбирают нас</h2>
+        <div class="advantages-grid">
+            <div class="advantage-card"><i class="fas fa-tachometer-alt"></i><h4>Быстро</h4><p>Среднее время ремонта — 6 часов</p></div>
+            <div class="advantage-card"><i class="fas fa-ruble-sign"></i><h4>Честные цены</h4><p>Фиксированная стоимость без доплат</p></div>
+            <div class="advantage-card"><i class="fas fa-handshake"></i><h4>Свои запчасти</h4><p>Можно привезти свои детали</p></div>
+            <div class="advantage-card"><i class="fas fa-clock"></i><h4>Удобный график</h4><p>Работаем до полуночи ежедневно</p></div>
+            <div class="advantage-card"><i class="fas fa-camera"></i><h4>Фото/видео отчёт</h4><p>Делаем фото ДО/ПОСЛЕ, присылаем видео процесса</p></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Нам доверяют</h2>
+        <div class="counter-grid">
+            <div class="counter-card"><div class="counter-number" id="counterCars">0</div><div class="counter-label">🚗 отремонтировано авто</div></div>
+            <div class="counter-card"><div class="counter-number" id="counterYears">0</div><div class="counter-label">⭐ лет опыта</div></div>
+            <div class="counter-card"><div class="counter-number" id="counterReviews">0</div><div class="counter-label">⭐ отзывов 5 звёзд (Авито)</div></div>
+        </div>
+    </div>
+
+    <div class="container" id="gallery">
+        <h2 class="section-title">📸 Наши работы</h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <!-- Реальные отзывы с Авито -->
+    <div class="container">
+        <h2 class="section-title">⭐ Отзывы с Авито</h2>
+        <div class="reviews-grid">
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">Д</div>
+                    <div class="review-info">
+                        <div class="review-name">Данил</div>
+                        <div class="review-car">LADA Гранта 90 л.с.</div>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+                <div class="review-text">"Обратился с проблемой регулировкой клапанов на гранте 90 л.с. Так как официальные дилеры загибают ценник ) Без проблем нашли свободное число на запись, обговорили удобное время. Машину приняли быстро, сделали хорошо! Делали конечно 6 часов но это пустяки, главное результат! 🔥 Спасибо большое 🤝 советую!!!"</div>
+                <div class="review-date">📅 5 апреля 2025</div>
+                <div class="review-photo">
+                    <span class="review-photo-icon"><i class="fas fa-image"></i> +2 фото после ремонта</span>
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">А</div>
+                    <div class="review-info">
+                        <div class="review-name">Андрей</div>
+                        <div class="review-car">Hyundai Avante Lpi</div>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+                <div class="review-text">"Обратился за регулировкой зазоров клапанов на Hyundai Avante Lpi. Работа сделана качественно, супер аккуратно. Рад что попал к таким мастерам. После регулировки машина - ракета👍 Она так пуляла, когда из Кореи приехала. Ещё раз спасибо, особенно помощнику. Желаю успехов и процветания."</div>
+                <div class="review-date">📅 25 марта 2025</div>
+            </div>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">С</div>
+                    <div class="review-info">
+                        <div class="review-name">Сергей</div>
+                        <div class="review-car">V6 (3.0)</div>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+                <div class="review-text">"Разбираются в том, что делают. Проточили 10 толкателей вместо 21 (из 24, мотор V6), остальные местами заменили после замеров. Экономия 3000 р. С учетом того, что здесь и так НЕДОРОГО! Зазоры в клапанах стали идеальными. На связи всегда, даже поздно вечером. Все объясняют, что и зачем. Можно обращаться, результат будет! Спасибо вам!"</div>
+                <div class="review-date">📅 10 марта 2025</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="faq">
+        <h2 class="section-title">❓ Часто задаваемые вопросы</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question"><i class="fas fa-chevron-right"></i> С какими двигателями и автомобилями вы работаете?</div>
+            <div class="faq-answer">
+                <p><strong>✅ Работаю с цельнометаллическим толкателем (стаканы). Шайбами и коромыслами — НЕ занимаюсь.</strong></p>
+                <p><strong>Hyundai / Kia:</strong> Hyundai Solaris, i30, i20, Kia Rio, Ceed, Cerato и др.</p>
+                <ul class="engine-list">
+                    <li>G4FC — 1.6 л</li>
+                    <li>G4FA — 1.4 л</li>
+                    <li>G4FG — 1.6 л (после 2017)</li>
+                    <li>G4KA — 2.0 л</li>
+                    <li>G4KD — 2.0 л</li>
+                    <li>G4KE — 2.4 л</li>
+                </ul>
+                <p><strong style="color:#b45f06;">Исключение (не нуждается):</strong> G4LC 1.4 л (после 2017)</p>
+                <p><strong>Mitsubishi:</strong> Lancer, Colt, Xpander, ASX, Delica, Eclipse, Outlander</p>
+                <ul class="engine-list">
+                    <li>4A90 — 1.3 л</li>
+                    <li>4A91 — 1.5 л</li>
+                    <li>4A92 — 1.6 л</li>
+                    <li>4B10 — 1.8 л</li>
+                    <li>4B11 — 2.0 л</li>
+                    <li>4B12 — 2.4 л</li>
+                </ul>
+                <p><strong>Toyota:</strong> очень много моделей</p>
+                <ul class="engine-list">
+                    <li>2NZ-FE — 1.3 л</li>
+                    <li>4ZZ-FE — 1.4 л</li>
+                    <li>1NZ-FE — 1.5 л</li>
+                    <li>3ZZ-FE — 1.6 л</li>
+                    <li>1ZZ-FE — 1.8 л</li>
+                    <li>1AZ-FE — 2.0 л</li>
+                    <li>2AZ-FE — 2.4 л</li>
+                </ul>
+                <p><strong>LADA:</strong> Гранта, Ларгус, Веста после 2021 — двигатель 11182 1.6 л 90 л.с.</p>
+                <p><strong>Haval:</strong> Junior, Jolion — GW4G15K; Haval M6 — GW4G15F</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question"><i class="fas fa-chevron-right"></i> Можно приехать со своими запчастями?</div>
+            <div class="faq-answer">Да, конечно! Вы можете привезти свои запчасти — оплачиваете только работу. Я всегда консультирую по выбору качественных деталей.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question"><i class="fas fa-chevron-right"></i> Даёте ли гарантию на работу?</div>
+            <div class="faq-answer">Да, на все виды работ предоставляю гарантию 3 месяца. При соблюдении рекомендаций по эксплуатации — гарантия сохраняется.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question"><i class="fas fa-chevron-right"></i> Как часто нужно проверять зазоры клапанов?</div>
+            <div class="faq-answer">На газу — раз в 40-60 тыс. км, на бензине — раз в 90 тыс. км. Регулярная проверка поможет избежать серьёзных поломок.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question"><i class="fas fa-chevron-right"></i> Присылаете фото и видео отчёт?</div>
+            <div class="faq-answer">Да! По желанию клиента делаю фото ДО/ПОСЛЕ каждого этапа работы, снимаю видео процесса замены цепи или регулировки. Все материалы отправляю в Telegram или WhatsApp после завершения работы.</div>
+        </div>
+    </div>
+
+    <div class="container" id="contacts">
+        <h2 class="section-title">📞 Контакты и связь</h2>
+        <div class="contacts-block">
+            <div class="contacts-flex">
+                <div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i> <div><strong>Телефон</strong><br><a href="tel:+79667163985">+7 966 716-39-85</a></div></div>
+                    <div class="contact-item"><i class="fab fa-telegram-plane"></i> <div><strong>Telegram</strong><br><a href="https://t.me/+79667163985" target="_blank">@AutoService_ekb</a></div></div>
+                    <div class="contact-item"><i class="fab fa-whatsapp"></i> <div><strong>WhatsApp</strong><br><a href="https://wa.me/79667163985" target="_blank">+7 966 716-39-85</a></div></div>
+                    <div class="contact-item"><i class="fas fa-store"></i> <div><strong>Авито</strong><br><a href="https://www.avito.ru/ekaterinburg/predlozheniya_uslug/regulirovka_klapanov_kia_hyundai_mitsubishi_toyota_2586879692" target="_blank">76 отзывов 5★ →</a></div></div>
+                    <div class="contact-item"><i class="far fa-clock"></i> <div><strong>Время для связи</strong><br>ПН–ВС 09:00 – 23:00</div></div>
+                </div>
+                <div>
+                    <div class="social-links">
+                        <a href="https://t.me/+79667163985" class="social-icon"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="https://wa.me/79667163985" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                        <a href="tel:+79667163985" class="social-icon"><i class="fas fa-phone"></i></a>
+                        <a href="https://www.avito.ru/ekaterinburg/predlozheniya_uslug/regulirovka_klapanov_kia_hyundai_mitsubishi_toyota_2586879692" class="social-icon"><i class="fas fa-store"></i></a>
+                    </div>
+                    <button id="openModalBtn2" class="btn-primary" style="margin-top: 25px; width: 100%;">📩 Оставить заявку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="map">
+        <h2 class="section-title">📍 Как нас найти</h2>
+        <div class="route-text">
+            <p><i class="fas fa-map-pin" style="color:#ff8c00;"></i> <strong>Точный адрес:</strong> Свердловская обл., Екатеринбург, жилой район Нижне-Исетский, ул. Писарева, 33 (Чкаловский район)</p>
+            <p><i class="fas fa-car"></i> <strong>Как проехать:</strong> Ориентир — остановка «Нижне-Исетский», далее пешком 2 минуты. Есть удобная парковка.</p>
+            <p><i class="fas fa-subway"></i> <strong>Общественный транспорт:</strong> Автобусы № 18, 23, 56, маршрутки до остановки «Улица Писарева».</p>
+        </div>
+        <div id="yandexMap" class="map-container"></div>
+    </div>
+</div>
+
+<!-- Страница блога -->
+<div id="blogPage" style="display: none;">
+    <div class="container">
+        <h2 class="section-title">📝 Полезные статьи</h2>
+        <div class="blog-posts" id="blogPostsList"></div>
+    </div>
+</div>
+
+<!-- Страница статьи -->
+<div id="articlePage" style="display: none;"></div>
+
+<footer>
+    <div class="container">
+        <p>Частный автомеханик | Стаж 3 года | Ремонт двигателей Hyundai, Kia, Haval, Toyota, Mitsubishi, LADA</p>
+        <p style="margin-top: 8px;">📞 +7 966 716-39-85 | Режим работы сервиса: 11:00 – 23:59</p>
+        <p style="margin-top: 8px;" id="copyrightYear"></p>
+    </div>
+</footer>
+
+<div class="floating-buttons">
+    <a href="tel:+79667163985" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+    <a href="https://t.me/+79667163985" target="_blank" class="float-btn tg"><i class="fab fa-telegram-plane"></i></a>
+    <a href="https://wa.me/79667163985" target="_blank" class="float-btn wa"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://www.avito.ru/ekaterinburg/predlozheniya_uslug/regulirovka_klapanov_kia_hyundai_mitsubishi_toyota_2586879692" target="_blank" class="float-btn avito"><i class="fas fa-store"></i></a>
+</div>
+
+<div id="galleryModal" class="gallery-modal">
+    <div class="gallery-modal-header"><h3><i class="fas fa-images"></i> Наши работы (10 фото)</h3><button class="close-gallery">&times;</button></div>
+    <div class="gallery-slider"><button class="gallery-nav prev" id="prevSlide">❮</button><div id="gallerySlide" class="gallery-slide"></div><button class="gallery-nav next" id="nextSlide">❯</button></div>
+    <div class="gallery-dots" id="galleryDots"></div>
+</div>
+
+<div id="callbackModal" class="modal">
+    <div class="modal-content"><span class="close-modal">&times;</span><h3 style="color:#ffaa44;">📞 Быстрая заявка</h3>
+        <input type="text" id="userName" placeholder="Ваше имя"><input type="tel" id="userPhone" placeholder="Номер телефона *">
+        <textarea id="userMsg" rows="3" placeholder="Марка авто, проблема..."></textarea><button id="sendCallback">Отправить →</button>
+        <div id="formSuccess" style="margin-top: 12px; text-align: center;"></div><p style="font-size: 11px; margin-top: 12px; color:#888;">Я перезвоню в течение 15 минут</p>
+    </div>
+</div>
+
+<script>
+    // Автообновление года в футере
+    document.getElementById('copyrightYear').innerHTML = '© ' + new Date().getFullYear() + ' AutoService — Нижне-Исетский, Екатеринбург';
+
+    // Данные статей
+    const articles = {
+        1: {
+            title: "Когда нужно регулировать клапаны?",
+            date: "15 марта 2025",
+            content: `<h2>Признаки того, что пора регулировать клапаны</h2><p>Регулировка клапанов — одна из важнейших процедур обслуживания двигателя. Вот основные признаки, что пора ехать к механику:</p><ul><li><strong>Характерный цокот</strong> из-под капота на холодную — первый и самый явный признак</li><li><strong>Падение мощности</strong> — автомобиль стал хуже разгоняться</li><li><strong>Увеличенный расход топлива</strong> — неправильные зазоры влияют на смесеобразование</li><li><strong>Неустойчивая работа на холостых оборотах</strong></li></ul><h2>Интервалы регулировки для разных двигателей</h2><p>Для двигателей Hyundai/Kia серии G4F, G4K: регламентная проверка каждые 90 000 км, при эксплуатации на газу — 40 000 км.</p><p>Для двигателей Mitsubishi 4B10/4B11/4B12: рекомендуется проверять каждые 60 000 км, на газу — 40 000 км.</p><p>Для Toyota 1ZZ-FE/1NZ-FE: производитель заявляет 80 000 км, но опыт показывает — лучше каждые 60 000 км.</p><h2>Почему это важно</h2><p>Зазоры клапанов влияют на наполнение цилиндров, работу ГРМ и ресурс двигателя в целом. При заниженных зазорах клапаны могут прогарать, при завышенных — появляется шум и падает мощность.</p><p>На двигателях с гидрокомпенсаторами регулировка не нужна, но на большинстве двигателей Hyundai/Kia/Mitsubishi/Toyota до 2010-х годов гидрокомпенсаторов нет — нужна ручная регулировка.</p>`
+        },
+        2: {
+            title: "Как понять, что пора менять цепь ГРМ?",
+            date: "1 марта 2025",
+            content: `<h2>Признаки растяжения цепи ГРМ</h2><ul><li><strong>Металлический звон или дребезжание</strong> из области ГРМ — цепь бьёт о кожух</li><li><strong>Ошибки по фазе газораспределения</strong> — P0016, P0017, P0340</li><li><strong>Плавающие обороты</strong> и нестабильная работа двигателя</li><li><strong>Шум при запуске холодного двигателя</strong> — подвывание или скрежет</li></ul><h2>Особенности цепи ГРМ на разных двигателях</h2><p><strong>Hyundai/Kia G4FC, G4FG:</strong> Ресурс цепи — около 120-150 тыс. км, но часто требует замены раньше из-за растяжения. При появлении шума — не тяните, проскок цепи гарантированно погнёт клапаны.</p><p><strong>Mitsubishi 4B11:</strong> Цепь считается надёжной, но натяжитель может подклинивать. Рекомендую менять вместе с натяжителем и успокоителями каждые 150 тыс. км.</p><p><strong>Haval GW4G15K/F:</strong> Цепь — слабое место, многие меняют уже на 80-100 тыс. км. При первых признаках шума — сразу на диагностику.</p>`
+        },
+        3: {
+            title: "Газ или бензин: влияние на клапаны",
+            date: "20 февраля 2025",
+            content: `<h2>Почему на газе клапана «горят» чаще?</h2><p>Газовое топливо имеет более высокую температуру сгорания, чем бензин. Это приводит к более интенсивному нагреву клапанов и их тепловой деформации.</p><p>Кроме того, на газе отсутствует смазывающий эффект бензина — сёдла клапанов быстрее изнашиваются, зазоры уменьшаются.</p><h2>Рекомендации для газовых автомобилей</h2><ul><li><strong>Контроль зазоров каждые 40 000 км</strong> — это критически важно!</li><li><strong>Установка системы с впрыском газа в жидкой фазе</strong> — она менее агрессивна к клапанам</li><li><strong>Использование качественного ГБО с автоматической калибровкой</strong></li><li><strong>Не экономьте на охлаждающей жидкости</strong> — перегрев на газу губителен для двигателя</li></ul><h2>Что будет, если запустить регулировку?</h2><p>При заниженных зазорах клапан не закрывается полностью — происходит утечка компрессии, клапан перегревается и прогорает. Ремонт в таком случае — замена клапанов, сёдел, а иногда и головки блока цилиндров.</p>`
+        },
+        4: {
+            title: "Какое масло лучше для Hyundai/Kia?",
+            date: "5 февраля 2025",
+            content: `<h2>Рекомендации по выбору масла</h2><p>Для двигателей G4FC, G4FG, G4KD, G4KE производитель рекомендует масла с допуском ILSAC GF-5 или ACEA A5/B5.</p><h2>Вязкость</h2><ul><li><strong>5W-20</strong> — для холодного климата, максимальная экономия топлива</li><li><strong>5W-30</strong> — универсальный выбор для большинства регионов</li><li><strong>5W-40</strong> — для интенсивной эксплуатации, спортивной езды</li></ul><h2>Ошибки при выборе масла</h2><p>Самая распространённая ошибка — заливать слишком густое масло. Это приводит к масляному голоданию на холодную и износу вкладышей коленвала.</p><p>Не экономьте на масле — плохое масло быстро теряет свойства, коксуется и убивает двигатель.</p><h2>Реальные отзывы владельцев</h2><p>На практике отлично зарекомендовали себя масла: Mobil 1 ESP 5W-30, Shell Helix Ultra 5W-40, Motul 8100 Eco-nergy 5W-20. Оригинальное масло Hyundai/Kia — тоже хороший выбор, но дороже аналогов.</p>`
+        }
+    };
+
+    const blogArticles = [
+        { id: 1, title: "Когда нужно регулировать клапаны?", date: "15 марта 2025", excerpt: "Разбираем признаки износа, интервалы для разных двигателей и почему это важно для ресурса мотора...", img: "https://placehold.co/600x400/2a2e36/ff8c00?text=Регулировка+клапанов" },
+        { id: 2, title: "Как понять, что пора менять цепь ГРМ?", date: "1 марта 2025", excerpt: "Стук, плавающие обороты, ошибки по датчикам — рассказываем, на что обратить внимание...", img: "https://placehold.co/600x400/2a2e36/ff8c00?text=Цепь+ГРМ" },
+        { id: 3, title: "Газ или бензин: влияние на клапаны", date: "20 февраля 2025", excerpt: "Почему на газу зазоры нужно проверять чаще и как продлить жизнь двигателю...", img: "https://placehold.co/600x400/2a2e36/ff8c00?text=Газ+vs+Бензин" },
+        { id: 4, title: "Какое масло лучше для Hyundai/Kia?", date: "5 февраля 2025", excerpt: "Разбираем допуски, вязкости и популярные ошибки при выборе масла для G4FC, G4FG...", img: "https://placehold.co/600x400/2a2e36/ff8c00?text=Моторное+масло" }
+    ];
+    
+    function showMainPage() { 
+        document.getElementById('mainPage').style.display = 'block'; 
+        document.getElementById('blogPage').style.display = 'none'; 
+        document.getElementById('articlePage').style.display = 'none'; 
+        window.scrollTo(0, 0); 
+    }
+    
+    function showBlogPage() { 
+        document.getElementById('mainPage').style.display = 'none'; 
+        document.getElementById('blogPage').style.display = 'block'; 
+        document.getElementById('articlePage').style.display = 'none'; 
+        renderBlogList();
+        window.scrollTo(0, 0); 
+    }
+    
+    function showArticle(articleId) {
+        const article = articles[articleId];
+        if (!article) return;
+        const articleHtml = `
+            <div class="article-page">
+                <h1>${article.title}</h1>
+                <div class="article-meta">📅 ${article.date} | 🔧 Автосервис AutoService</div>
+                ${article.content}
+                <button onclick="showBlogPage()" class="back-to-blog">← Вернуться к списку статей</button>
+            </div>
+        `;
+        document.getElementById('articlePage').innerHTML = articleHtml;
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('blogPage').style.display = 'none';
+        document.getElementById('articlePage').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+    
+    function renderBlogList() {
+        const container = document.getElementById('blogPostsList');
+        container.innerHTML = blogArticles.map(article => `
+            <div class="blog-card">
+                <img src="${article.img}" alt="${article.title}">
+                <div class="blog-content">
+                    <div class="blog-date">📅 ${article.date}</div>
+                    <div class="blog-title">${article.title}</div>
+                    <div class="blog-excerpt">${article.excerpt}</div>
+                    <a href="#" onclick="showArticle(${article.id}); return false;" class="read-more">Читать далее →</a>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function scrollToTop() { window.scrollTo(0, 0); }
+    
+    window.showMainPage = showMainPage;
+    window.showBlogPage = showBlogPage;
+    window.showArticle = showArticle;
+    window.scrollToTop = scrollToTop;
+    
+    // Галерея
+    const galleryItems = [
+        { src: "https://videotourl.com/images/1775495634823-57e40b43-ecd7-47e0-a40d-867b67f4b819.jpeg", title: "🔧 Регулировка клапанов — Hyundai Solaris G4FC" },
+        { src: "https://videotourl.com/images/1775495690583-c5641620-bb88-4b55-989b-3a6618dbce84.jpeg", title: "⚙️ Замена цепи ГРМ — Toyota Corolla 1ZZ-FE" },
+        { src: "https://videotourl.com/images/1775495721215-4d36eaff-da77-4dcd-bf6a-b29d091bc0e9.jpeg", title: "📊 Эндоскопия — Haval Jolion GW4G15K" },
+        { src: "https://videotourl.com/images/1775495742975-3e4e1a62-39e7-4e79-8502-dd19a3334bb5.jpeg", title: "🔩 Проточка стаканов — Hyundai Solaris" },
+        { src: "https://videotourl.com/images/1775495765082-7dd3459a-fe79-4f7f-b089-90f858783902.jpeg", title: "🛠️ Замер зазоров — Kia Rio G4FG" },
+        { src: "https://videotourl.com/images/1775495791393-1d042925-3d8a-4265-a4c2-30838921d5fc.jpeg", title: "⛽ Проверка меток ГРМ — Mitsubishi Lancer 4B11" },
+        { src: "https://videotourl.com/images/1775495813016-4db85ace-546b-4bf3-8dac-d2e0e3190b88.jpeg", title: "🔍 Замена маслосъемных — LADA Vesta 11182" },
+        { src: "https://videotourl.com/images/1775495832970-ba5dd2d5-d1a3-46a5-bfa4-e5f1de5fee48.jpeg", title: "⚡ Осмотр натяжителя — Haval M6 GW4G15F" },
+        { src: "https://videotourl.com/images/1775495857191-b18952bf-f349-45e9-b890-4c3aa8207ba7.jpeg", title: "🏆 Регулировка клапанов — Toyota Corolla 1NZ-FE" },
+        { src: "https://videotourl.com/images/1775495876732-c77c3f67-949b-47d2-b18a-16935bddaef7.jpeg", title: "⭐ Диагностика и ремонт двигателей" }
+    ];
+    
+    // Счётчик
+    function animateCounter(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            element.innerText = Math.floor(progress * (end - start) + start);
+            if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(document.getElementById('counterCars'), 0, 687, 2000);
+                animateCounter(document.getElementById('counterYears'), 0, 3, 1500);
+                animateCounter(document.getElementById('counterReviews'), 0, 76, 2000);
+                observer.disconnect();
+            }
+        });
+    });
+    const counterSection = document.querySelector('.counter-grid');
+    if (counterSection) observer.observe(counterSection);
+    
+    // Построение галереи
+    const galleryGrid = document.getElementById('galleryGrid');
+    function buildGallery() {
+        galleryGrid.innerHTML = '';
+        galleryItems.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+            div.innerHTML = `<img src="${item.src}" alt="Фото" loading="lazy" onerror="this.src='https://placehold.co/400x400/2a2a30/ff8c00?text=Фото'">`;
+            div.addEventListener('click', () => openGalleryAt(index));
+            galleryGrid.appendChild(div);
+        });
+    }
+    
+    let currentIndex = 0;
+    const modalGallery = document.getElementById('galleryModal');
+    const slideContainer = document.getElementById('gallerySlide');
+    const dotsContainer = document.getElementById('galleryDots');
+    
+    function renderSlide(index) {
+        const item = galleryItems[index];
+        slideContainer.innerHTML = `<img src="${item.src}" alt="Фото" loading="lazy" onerror="this.src='https://placehold.co/600x400/2a2a30/ff8c00?text=Фото'"><p>${item.title}</p>`;
+        document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+    
+    function renderDots() {
+        dotsContainer.innerHTML = '';
+        galleryItems.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === currentIndex) dot.classList.add('active');
+            dot.addEventListener('click', () => { currentIndex = i; renderSlide(currentIndex); });
+            dotsContainer.appendChild(dot);
+        });
+    }
+    
+    function openGalleryAt(index) {
+        currentIndex = index;
+        renderSlide(currentIndex);
+        renderDots();
+        modalGallery.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeGallery() {
+        modalGallery.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    function nextSlide() { currentIndex = (currentIndex + 1) % galleryItems.length; renderSlide(currentIndex); renderDots(); }
+    function prevSlide() { currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length; renderSlide(currentIndex); renderDots(); }
+    
+    document.querySelector('.close-gallery').addEventListener('click', closeGallery);
+    document.getElementById('nextSlide').addEventListener('click', nextSlide);
+    document.getElementById('prevSlide').addEventListener('click', prevSlide);
+    modalGallery.addEventListener('click', (e) => { if (e.target === modalGallery) closeGallery(); });
+    
+    let touchStartX = 0;
+    slideContainer.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+    slideContainer.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchEndX < touchStartX - 50) nextSlide();
+        if (touchEndX > touchStartX + 50) prevSlide();
+    });
+    
+    // FAQ
+    document.querySelectorAll('.faq-item').forEach(item => {
+        item.querySelector('.faq-question').addEventListener('click', () => item.classList.toggle('open'));
+    });
+    
+    // Модалка
+    const modal = document.getElementById('callbackModal');
+    document.getElementById('openModalBtn').onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
+    document.getElementById('openModalBtn2').onclick = () => { modal.style.display = 'flex'; };
+    document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    document.getElementById('sendCallback').onclick = () => {
+        let phone = document.getElementById('userPhone').value.trim();
+        if (!phone) { alert('Введите номер телефона'); return; }
+        document.getElementById('formSuccess').innerHTML = '✅ Спасибо! Скоро позвоню.';
+        document.getElementById('userName').value = '';
+        document.getElementById('userPhone').value = '';
+        document.getElementById('userMsg').value = '';
+        setTimeout(() => { modal.style.display = 'none'; document.getElementById('formSuccess').innerHTML = ''; }, 2000);
+    };
+    
+    // Карта Яндекс
+    ymaps.ready(init);
+    function init() {
+        var myMap = new ymaps.Map("yandexMap", { 
+            center: [56.7795, 60.6350], 
+            zoom: 16, 
+            controls: ['zoomControl', 'fullscreenControl'] 
+        });
+        myMap.geoObjects.add(new ymaps.Placemark([56.7795, 60.6350], {
+            balloonContentHeader: "🔧 AutoService",
+            balloonContentBody: "ул. Писарева, 33, Нижне-Исетский<br>Ежедневно 11:00–23:59<br>☎ +7 966 716-39-85"
+        }, { 
+            preset: 'islands#redAutoIcon', 
+            iconColor: '#ff8c00' 
+        }));
+    }
+    
+    buildGallery();
+</script>
+</body>
+</html>
